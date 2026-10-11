@@ -213,6 +213,12 @@ class WaydroidBackend(AndroidBackend):
         return st
 
     def start_session(self, on_line: Callable[[str], None] | None = None) -> None:
+        # Host isolation: make sure the container can never reach host disks.
+        try:
+            from . import hostprotect
+            hostprotect.ensure()
+        except Exception:  # noqa: BLE001
+            pass
         running = self.state().session == "RUNNING"
         if running and self._compositor_alive():
             return
