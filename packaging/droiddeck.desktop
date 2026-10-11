@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=DroidDeck
+Name[zh_CN]=DroidDeck 应用运行器
+Comment=Run Android apps (APK) via the Waydroid container
+Comment[zh_CN]=通过 Waydroid 容器安装并运行安卓应用（APK）
+Exec=droiddeck
+Icon=droiddeck
+Terminal=false
+Categories=Utility;
+Keywords=android;apk;waydroid;
