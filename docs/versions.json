@@ -1,6 +1,23 @@
 {
-  "latest": "0.3.0",
+  "latest": "0.3.1",
   "versions": [
+    {
+      "version": "0.3.1",
+      "date": "2026-10-11",
+      "notes": "「关于」页更新说明。\n\n- 关于页显示当前版本号与更新服务器地址\n- 「检查更新」按钮旁显示检查结果（已是最新 / 发现新版本 / 检查失败）\n- 更新服务器：https://qiuqiu2017.github.io/droiddeck\n- 启动时仍会自动静默检查更新，发现新版本弹窗提示",
+      "assets": [
+        {
+          "name": "droiddeck_0.3.1_amd64.deb",
+          "url": "https://github.com/Qiuqiu2017/droiddeck/releases/download/v0.3.1/droiddeck_0.3.1_amd64.deb",
+          "size": "46.2 MB"
+        },
+        {
+          "name": "droiddeck-linux-x86_64.tar.gz",
+          "url": "https://github.com/Qiuqiu2017/droiddeck/releases/download/v0.3.1/droiddeck-linux-x86_64.tar.gz",
+          "size": "64.7 MB"
+        }
+      ]
+    },
     {
       "version": "0.3.0",
       "date": "2026-10-11",

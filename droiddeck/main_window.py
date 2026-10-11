@@ -119,18 +119,37 @@ class MainWindow(QWidget):
         QTimer.singleShot(3000, lambda: self._check_updates(manual=False))
 
     # --------------------------------------------------------- update check
+    def _set_update_status(self, text: str, kind: str = ""):
+        if not hasattr(self, "update_status"):
+            return
+        self.update_status.setText(text)
+        color = {"ok": theme.ACCENT, "err": theme.DANGER}.get(kind, theme.TEXT_DIM)
+        self.update_status.setStyleSheet(f"color:{color};")
+
     def _check_updates(self, manual: bool = True):
+        self._set_update_status("正在检查更新…")
         w = UpdateWorker(manual, self)
-        w.found.connect(lambda info: self._show_update(info))
-        if manual:
-            w.none.connect(lambda: QMessageBox.information(
-                self, "检查更新", f"当前已是最新版本（v{__version__}）。"))
-            w.failed.connect(lambda e: QMessageBox.warning(
-                self, "检查更新", f"无法连接更新服务器：{e}"))
+        w.found.connect(self._show_update)
+        w.none.connect(lambda: self._on_no_update(manual))
+        w.failed.connect(lambda e: self._on_update_failed(e, manual))
         w.start()
         self._update_worker = w  # keep a reference
 
+    def _on_no_update(self, manual: bool):
+        self._set_update_status(f"已是最新版本（v{__version__}）", "ok")
+        if manual:
+            QMessageBox.information(
+                self, "检查更新", f"当前已是最新版本（v{__version__}）。")
+
+    def _on_update_failed(self, err: str, manual: bool):
+        self._set_update_status(f"检查失败：{err}", "err")
+        if manual:
+            QMessageBox.warning(
+                self, "检查更新", f"无法连接更新服务器：{err}")
+
     def _show_update(self, info: "updater.UpdateInfo"):
+        self._set_update_status(
+            f"发现新版本 v{info.version}（当前 v{__version__}）", "ok")
         box = QMessageBox(self)
         box.setWindowTitle("发现新版本")
         box.setText(f"发现新版本 v{info.version}（当前 v{__version__}）")
@@ -288,16 +307,34 @@ class MainWindow(QWidget):
         about.setObjectName("Dim")
         lay.addWidget(about)
 
+        card = QFrame()
+        card.setObjectName("Card")
+        cl = QVBoxLayout(card)
+        cl.setContentsMargins(18, 18, 18, 18)
+        cl.setSpacing(6)
+
+        self.version_lbl = QLabel(f"当前版本　v{__version__}")
+        self.version_lbl.setObjectName("H2")
+        cl.addWidget(self.version_lbl)
+
+        server_lbl = QLabel("更新服务器　qiuqiu2017.github.io/droiddeck")
+        server_lbl.setObjectName("DimSmall")
+        server_lbl.setWordWrap(True)
+        cl.addWidget(server_lbl)
+
+        self.update_status = QLabel("")
+        self.update_status.setObjectName("DimSmall")
+        cl.addWidget(self.update_status)
+
         row = QHBoxLayout()
-        self.version_lbl = QLabel(f"当前版本 v{__version__}")
-        self.version_lbl.setObjectName("DimSmall")
-        row.addWidget(self.version_lbl)
         row.addStretch(1)
         check_btn = QPushButton("检查更新")
-        check_btn.setObjectName("Secondary")
+        check_btn.setObjectName("Primary")
         check_btn.clicked.connect(lambda: self._check_updates(manual=True))
         row.addWidget(check_btn)
-        lay.addLayout(row)
+        cl.addLayout(row)
+
+        lay.addWidget(card)
         lay.addStretch(1)
         return page
 
