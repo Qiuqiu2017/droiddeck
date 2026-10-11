@@ -5,7 +5,18 @@
       "version": "0.1.1",
       "date": "2026-10-11",
       "notes": "修复 Root 环境相关问题。\n\n- 修复：应用无法获取 / 检测到 Root（su 因等待授权弹窗而卡住）\n- 安装应用时自动为其授予 Root，新装应用也不再卡\n- 说明：Shizuku、Termux、MT管理器 等现在可正常使用 Root",
-      "assets": []
+      "assets": [
+        {
+          "name": "droiddeck_0.1.1_amd64.deb",
+          "url": "https://github.com/Qiuqiu2017/droiddeck/releases/download/v0.1.1/droiddeck_0.1.1_amd64.deb",
+          "size": "46.2 MB"
+        },
+        {
+          "name": "droiddeck-linux-x86_64.tar.gz",
+          "url": "https://github.com/Qiuqiu2017/droiddeck/releases/download/v0.1.1/droiddeck-linux-x86_64.tar.gz",
+          "size": "64.7 MB"
+        }
+      ]
     },
     {
       "version": "0.1.0",
