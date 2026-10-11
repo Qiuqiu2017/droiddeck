@@ -9,3 +9,7 @@ dist/
 *.zip
 *.deb
 *.AppImage
+
+# update server mirror/generated
+server/releases/
+server/build/

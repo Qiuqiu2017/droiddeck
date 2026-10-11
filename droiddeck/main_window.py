@@ -22,6 +22,8 @@ from .settings import Settings
 from .root_dialog import RootPromptDialog
 from .taskdialog import TaskDialog
 from .rootenv import RootEnv
+from . import updater
+from . import __version__
 
 
 class DataWorker(QThread):
@@ -59,6 +61,28 @@ class WarmUpWorker(QThread):
             pass
 
 
+class UpdateWorker(QThread):
+    """Check the update server in the background."""
+
+    found = Signal(object)      # updater.UpdateInfo
+    none = Signal()
+    failed = Signal(str)
+
+    def __init__(self, manual: bool = False, parent=None):
+        super().__init__(parent)
+        self.manual = manual
+
+    def run(self):
+        info = updater.check()
+        if info.error:
+            self.failed.emit(info.error)
+            return
+        if updater.is_newer(info.version, __version__):
+            self.found.emit(info)
+        else:
+            self.none.emit()
+
+
 class MainWindow(QWidget):
     def __init__(self, backend: AndroidBackend | None = None):
         super().__init__()
@@ -92,6 +116,35 @@ class MainWindow(QWidget):
         self.timer.start()
 
         QTimer.singleShot(400, self._prompt_root)
+        QTimer.singleShot(3000, lambda: self._check_updates(manual=False))
+
+    # --------------------------------------------------------- update check
+    def _check_updates(self, manual: bool = True):
+        w = UpdateWorker(manual, self)
+        w.found.connect(lambda info: self._show_update(info))
+        if manual:
+            w.none.connect(lambda: QMessageBox.information(
+                self, "检查更新", f"当前已是最新版本（v{__version__}）。"))
+            w.failed.connect(lambda e: QMessageBox.warning(
+                self, "检查更新", f"无法连接更新服务器：{e}"))
+        w.start()
+        self._update_worker = w  # keep a reference
+
+    def _show_update(self, info: "updater.UpdateInfo"):
+        box = QMessageBox(self)
+        box.setWindowTitle("发现新版本")
+        box.setText(f"发现新版本 v{info.version}（当前 v{__version__}）")
+        if info.notes:
+            box.setInformativeText(info.notes)
+        go = box.addButton("前往下载", QMessageBox.AcceptRole)
+        box.addButton("稍后", QMessageBox.RejectRole)
+        box.exec()
+        if box.clickedButton() is go:
+            url = info.download_url() or info.page_url
+            if url:
+                from PySide6.QtGui import QDesktopServices
+                from PySide6.QtCore import QUrl
+                QDesktopServices.openUrl(QUrl(url))
 
     # ------------------------------------------------------------ root env
     def _prompt_root(self):
@@ -228,6 +281,17 @@ class MainWindow(QWidget):
         about.setWordWrap(True)
         about.setObjectName("Dim")
         lay.addWidget(about)
+
+        row = QHBoxLayout()
+        self.version_lbl = QLabel(f"当前版本 v{__version__}")
+        self.version_lbl.setObjectName("DimSmall")
+        row.addWidget(self.version_lbl)
+        row.addStretch(1)
+        check_btn = QPushButton("检查更新")
+        check_btn.setObjectName("Secondary")
+        check_btn.clicked.connect(lambda: self._check_updates(manual=True))
+        row.addWidget(check_btn)
+        lay.addLayout(row)
         lay.addStretch(1)
         return page
 
