@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DroidDeck — 在 Linux 上运行 Android 应用</title>
+<meta name="description" content="DroidDeck 通过 Waydroid 容器在 Linux 上安装并运行 Android 应用，提供图形界面、可选 Root 环境。">
+<style>
+  :root{
+    --bg:#0f1115; --surface:#171a21; --surface2:#1e2230; --border:#2a2f3a;
+    --text:#e8eaf0; --dim:#9aa2b1; --accent:#3ddc84;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);
+    font-family:Inter,"Noto Sans CJK SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+    line-height:1.65;-webkit-font-smoothing:antialiased}
+  a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .wrap{max-width:960px;margin:0 auto;padding:0 24px}
+  header{padding:26px 0;display:flex;align-items:center;justify-content:space-between}
+  .brand{display:flex;align-items:center;gap:12px;font-weight:800;font-size:20px}
+  .brand img{width:36px;height:36px;border-radius:10px}
+  .nav a{color:var(--dim);margin-left:20px;font-weight:600}
+  .hero{padding:56px 0 40px}
+  .hero h1{font-size:44px;line-height:1.15;margin:0 0 16px;font-weight:800}
+  .hero p{font-size:18px;color:var(--dim);max-width:640px;margin:0 0 28px}
+  .btns{display:flex;gap:14px;flex-wrap:wrap}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:13px 22px;border-radius:12px;
+    font-weight:700;border:1px solid var(--border);background:var(--surface);color:var(--text)}
+  .btn.primary{background:var(--accent);color:#06210f;border:none}
+  .btn:hover{text-decoration:none;filter:brightness(1.06)}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;padding:8px 0 56px}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px}
+  .card h3{margin:0 0 8px;font-size:16px}
+  .card p{margin:0;color:var(--dim);font-size:14px}
+  section{padding:40px 0;border-top:1px solid var(--border)}
+  h2{font-size:24px;margin:0 0 20px}
+  .ver{background:var(--surface);border:1px solid var(--border);border-radius:14px;
+    padding:18px;margin-bottom:14px}
+  .ver .top{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+  .ver .tag{font-weight:800;font-size:18px}
+  .ver .date{color:var(--dim);font-size:13px}
+  .badge{background:rgba(61,220,132,.15);color:var(--accent);border-radius:8px;
+    padding:2px 10px;font-size:12px;font-weight:700}
+  .ver .notes{color:var(--dim);font-size:14px;white-space:pre-wrap;margin:8px 0 12px}
+  .ver .dl{display:flex;gap:10px;flex-wrap:wrap}
+  .ver .dl a{font-size:14px}
+  footer{padding:40px 0;color:var(--dim);font-size:13px;border-top:1px solid var(--border)}
+  code{background:var(--surface2);padding:2px 6px;border-radius:6px;font-size:13px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand"><img src="icon.svg" alt="">DroidDeck</div>
+    <nav class="nav">
+      <a href="#download">下载</a>
+      <a href="https://github.com/Qiuqiu2017/droiddeck" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </header>
+
+  <div class="hero">
+    <h1>在 Linux 上运行 Android 应用</h1>
+    <p>DroidDeck 通过 Waydroid 容器安装并运行安卓应用（APK），提供现代图形界面、应用库、
+       一键启动，以及可选的 Root 环境（Magisk + Shamiko 隐藏）。</p>
+    <div class="btns" id="heroBtns">
+      <a class="btn primary" href="#download">下载最新版</a>
+      <a class="btn" href="https://github.com/Qiuqiu2017/droiddeck" target="_blank" rel="noopener">查看源码</a>
+    </div>
+  </div>
+
+  <div class="cards">
+    <div class="card"><h3>图形化安装</h3><p>仿原生 Android 的安装界面，从应用库一键启动、卸载。</p></div>
+    <div class="card"><h3>Android 桌面</h3><p>一键打开全屏安卓桌面，操作体验如同安卓平板。</p></div>
+    <div class="card"><h3>可选 Root</h3><p>启动时询问是否启用，自动安装 Magisk 与 Shamiko 隐藏模块。</p></div>
+    <div class="card"><h3>纯本地运行</h3><p>应用运行在隔离的 Android 容器中，不上传任何数据。</p></div>
+  </div>
+
+  <section id="download">
+    <h2>下载</h2>
+    <p style="color:var(--dim);margin-top:-8px">面向 Linux（Debian / Ubuntu / Kali 等）。运行 Android 应用依赖已安装的 Waydroid。</p>
+    <div id="versions"><p style="color:var(--dim)">正在加载版本列表…</p></div>
+  </section>
+
+  <section>
+    <h2>安装</h2>
+    <p>Debian / Ubuntu / Kali：</p>
+    <p><code>sudo apt install ./droiddeck_&lt;版本&gt;_amd64.deb</code></p>
+    <p>其它 Linux：下载 tar.gz 解压后运行目录内的 <code>droiddeck</code>。</p>
+  </section>
+
+  <footer>
+    DroidDeck 是独立开源项目，遵循 GPL-3.0，与 Waydroid、LineageOS、Android、Google 无隶属关系。
+  </footer>
+</div>
+
+<script>
+function assetLabel(name){
+  if(name.endsWith('.deb')) return '下载 .deb';
+  if(name.endsWith('.tar.gz')) return '下载 tar.gz';
+  if(name.endsWith('.zip')) return '下载 .zip';
+  return '下载';
+}
+function render(data){
+  const box = document.getElementById('versions');
+  if(!data.versions || !data.versions.length){ box.innerHTML='<p style="color:var(--dim)">暂无版本。</p>'; return; }
+  box.innerHTML = '';
+  data.versions.forEach(v=>{
+    const latest = v.version === data.latest;
+    const el = document.createElement('div');
+    el.className='ver';
+    let dl = (v.assets||[]).map(a=>
+      `<a class="btn" href="${a.url}">${assetLabel(a.name)} <span style="color:var(--dim)">(${a.size})</span></a>`).join('');
+    el.innerHTML = `
+      <div class="top">
+        <span class="tag">v${v.version}</span>
+        ${latest?'<span class="badge">最新</span>':''}
+        <span class="date">${v.date||''}</span>
+      </div>
+      ${v.notes?`<div class="notes">${v.notes}</div>`:''}
+      <div class="dl">${dl}</div>`;
+    box.appendChild(el);
+  });
+}
+fetch('versions.json',{cache:'no-store'}).then(r=>r.json()).then(render)
+  .catch(()=>{document.getElementById('versions').innerHTML=
+    '<p style="color:var(--dim)">版本列表加载失败，请到 GitHub Releases 下载。</p>';});
+</script>
+</body>
+</html>

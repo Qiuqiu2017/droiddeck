@@ -17,7 +17,9 @@ from . import __version__
 
 #: Update manifest endpoint. Overridable via the DROIDDECK_UPDATE_URL env var.
 DEFAULT_UPDATE_URL = os.environ.get(
-    "DROIDDECK_UPDATE_URL", "https://droiddeck.top/latest.json")
+    "DROIDDECK_UPDATE_URL",
+    "https://qiuqiu2017.github.io/droiddeck/latest.json",
+)
 
 
 @dataclass

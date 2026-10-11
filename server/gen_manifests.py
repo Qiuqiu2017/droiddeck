@@ -24,10 +24,20 @@ HERE = Path(__file__).resolve().parent
 META = HERE / "meta"
 RELEASES = HERE / "releases"
 SITE = HERE / "site"
-BUILD = HERE / "build"
+# Output goes to the repo's docs/ folder so GitHub Pages can serve it.
+# Override with OUTPUT=/path for other targets (e.g. an OSS sync dir).
+BUILD = Path(os.environ.get("OUTPUT", str(HERE.parent / "docs")))
 
 DL_BASE = os.environ.get("DL_BASE", "https://dl.droiddeck.top").rstrip("/")
 SITE_BASE = os.environ.get("SITE_BASE", "https://droiddeck.top").rstrip("/")
+# How each asset URL is built. {base} {version} {name} are substituted.
+# OSS layout (default):  {base}/{version}/{name}
+# GitHub Releases:       https://github.com/Qiuqiu2017/droiddeck/releases/download/v{version}/{name}
+DL_TEMPLATE = os.environ.get("DL_TEMPLATE", "{base}/{version}/{name}")
+
+
+def asset_url(version: str, name: str) -> str:
+    return DL_TEMPLATE.format(base=DL_BASE, version=version, name=name)
 
 
 def semver_key(v: str):
@@ -63,7 +73,7 @@ def main() -> None:
                 continue
             assets.append({
                 "name": name,
-                "url": f"{DL_BASE}/{version}/{name}",
+                "url": asset_url(version, name),
                 "size": human(f.stat().st_size),
             })
         entries.append({
