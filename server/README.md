@@ -20,7 +20,7 @@ server/
 | 域名 | 用途 |
 | --- | --- |
 | `droiddeck.cn` | 官网（静态站）|
-| `droiddeck.cn/updates/latest.json` | 应用检查更新 |
+| `droiddeck.cn/latest.json` | 应用检查更新 |
 | `dl.droiddeck.cn` | 所有版本安装包 |
 
 ## 一、买域名 + ICP 备案
@@ -82,5 +82,5 @@ gh release create v<新版本> dist/*.deb dist/*.tar.gz
 ## 六、应用内更新
 
 DroidDeck 会在启动时（后台）和「关于」页「检查更新」按钮里，读取
-`https://droiddeck.cn/updates/latest.json`，发现更高版本时弹窗提示并跳转下载。
+`https://droiddeck.cn/latest.json`，发现更高版本时弹窗提示并跳转下载。
 地址可用环境变量 `DROIDDECK_UPDATE_URL` 覆盖（便于测试）。

@@ -8,6 +8,7 @@ running version.
 from __future__ import annotations
 
 import json
+import os
 import platform
 import urllib.request
 from dataclasses import dataclass, field
@@ -15,7 +16,8 @@ from dataclasses import dataclass, field
 from . import __version__
 
 #: Update manifest endpoint. Overridable via the DROIDDECK_UPDATE_URL env var.
-DEFAULT_UPDATE_URL = "https://droiddeck.cn/updates/latest.json"
+DEFAULT_UPDATE_URL = os.environ.get(
+    "DROIDDECK_UPDATE_URL", "https://droiddeck.cn/latest.json")
 
 
 @dataclass
