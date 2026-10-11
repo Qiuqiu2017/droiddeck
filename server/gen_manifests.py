@@ -9,8 +9,8 @@ and writes:
   server/build/latest.json        latest version (used by the app's updater)
 
 Config via env:
-  DL_BASE   base URL for binaries      (default https://dl.droiddeck.cn)
-  SITE_BASE base URL for the website   (default https://droiddeck.cn)
+  DL_BASE   base URL for binaries      (default https://dl.droiddeck.top)
+  SITE_BASE base URL for the website   (default https://droiddeck.top)
 """
 
 from __future__ import annotations
@@ -26,8 +26,8 @@ RELEASES = HERE / "releases"
 SITE = HERE / "site"
 BUILD = HERE / "build"
 
-DL_BASE = os.environ.get("DL_BASE", "https://dl.droiddeck.cn").rstrip("/")
-SITE_BASE = os.environ.get("SITE_BASE", "https://droiddeck.cn").rstrip("/")
+DL_BASE = os.environ.get("DL_BASE", "https://dl.droiddeck.top").rstrip("/")
+SITE_BASE = os.environ.get("SITE_BASE", "https://droiddeck.top").rstrip("/")
 
 
 def semver_key(v: str):

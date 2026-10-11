@@ -1,8 +1,8 @@
 """Update checker for DroidDeck.
 
 Fetches the latest-version manifest from the project's update server
-(default https://droiddeck.cn/updates/latest.json) and compares it with the
-running version.
+(default https://droiddeck.top/latest.json) and compares it with the running
+version.
 """
 
 from __future__ import annotations
@@ -17,7 +17,7 @@ from . import __version__
 
 #: Update manifest endpoint. Overridable via the DROIDDECK_UPDATE_URL env var.
 DEFAULT_UPDATE_URL = os.environ.get(
-    "DROIDDECK_UPDATE_URL", "https://droiddeck.cn/latest.json")
+    "DROIDDECK_UPDATE_URL", "https://droiddeck.top/latest.json")
 
 
 @dataclass

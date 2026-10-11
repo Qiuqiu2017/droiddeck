@@ -19,13 +19,13 @@ server/
 
 | 域名 | 用途 |
 | --- | --- |
-| `droiddeck.cn` | 官网（静态站）|
-| `droiddeck.cn/latest.json` | 应用检查更新 |
-| `dl.droiddeck.cn` | 所有版本安装包 |
+| `droiddeck.top` | 官网（静态站）|
+| `droiddeck.top/latest.json` | 应用检查更新 |
+| `dl.droiddeck.top` | 所有版本安装包 |
 
 ## 一、买域名 + ICP 备案
 
-1. 阿里云 → 万网，注册 `droiddeck.cn` 并完成**域名实名认证**。
+1. 阿里云 → 万网，注册 `droiddeck.top` 并完成**域名实名认证**。
 2. 在阿里云购买一台最低配 ECS（包月 ≥3 个月），用于获取**备案服务号**。
 3. 阿里云 App → **ICP 备案**：填主体（个人即可）、网站信息，上传身份证、人脸核验。
 4. 通过后（3–20 工作日），域名才能解析到大陆节点。**未备案无法用大陆 CDN。**
@@ -40,8 +40,8 @@ server/
 ## 三、绑定 CDN
 
 1. 控制台 → CDN → 添加域名：
-   - `droiddeck.cn` → 源站 `droiddeck-site.oss-<地域>.aliyuncs.com`
-   - `dl.droiddeck.cn` → 源站 `droiddeck-dl.oss-<地域>.aliyuncs.com`
+   - `droiddeck.top` → 源站 `droiddeck-site.oss-<地域>.aliyuncs.com`
+   - `dl.droiddeck.top` → 源站 `droiddeck-dl.oss-<地域>.aliyuncs.com`
 2. 在域名解析里按 CDN 提示添加 CNAME。
 3. 申请免费 SSL 证书并开启 HTTPS。
 
@@ -72,7 +72,7 @@ export SITE_BUCKET=oss://droiddeck-site
 #    server/meta/<新版本>.json（date / notes / assets）
 # 4. 镜像 + 生成 + 上传
 ./server/publish.sh add <新版本>
-DL_BASE=https://dl.droiddeck.cn SITE_BASE=https://droiddeck.cn ./server/publish.sh gen
+DL_BASE=https://dl.droiddeck.top SITE_BASE=https://droiddeck.top ./server/publish.sh gen
 DL_BUCKET=oss://droiddeck-dl SITE_BUCKET=oss://droiddeck-site ./server/publish.sh sync
 # 5. 同步到 GitHub（可选，双通道）
 git add -A && git commit -m "Release v<新版本>" && git tag v<新版本> && git push --tags
@@ -82,5 +82,5 @@ gh release create v<新版本> dist/*.deb dist/*.tar.gz
 ## 六、应用内更新
 
 DroidDeck 会在启动时（后台）和「关于」页「检查更新」按钮里，读取
-`https://droiddeck.cn/latest.json`，发现更高版本时弹窗提示并跳转下载。
+`https://droiddeck.top/latest.json`，发现更高版本时弹窗提示并跳转下载。
 地址可用环境变量 `DROIDDECK_UPDATE_URL` 覆盖（便于测试）。
