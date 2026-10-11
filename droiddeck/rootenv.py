@@ -275,5 +275,9 @@ class RootEnv:
         except BackendError as e:
             if on_line:
                 on_line(f"隐藏模块配置：{e}")
+        # Pre-allow root for all installed apps so su never blocks.
+        grant = getattr(self.backend, "_grant_all_root", None)
+        if grant:
+            grant()
         if on_line:
             on_line("Root 环境就绪")

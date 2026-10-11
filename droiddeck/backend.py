@@ -355,6 +355,22 @@ class WaydroidBackend(AndroidBackend):
                 capture_output=True,
             )
 
+    def _grant_all_root(self) -> None:
+        """If Magisk is present, pre-allow root for all user apps so that su
+        never blocks on a prompt the container cannot display."""
+        out = self._run(["waydroid", "shell", "--", "su", "-c", "magisk -v"],
+                        timeout=15)
+        if "magisk" not in out.lower():
+            return
+        cmd = (
+            "for u in $(cmd package list packages -U | grep -oE 'uid:[0-9]+' "
+            "| cut -d: -f2 | sort -un); do if [ \"$u\" -ge 10000 ]; then "
+            "magisk --sqlite \"REPLACE INTO policies "
+            "(uid,policy,until,logging,notification) VALUES($u,2,0,1,1)\"; "
+            "fi; done"
+        )
+        self._run(["waydroid", "shell", "--", "su", "-c", cmd], timeout=60)
+
     def install_apk(self, apk: str, on_line: Callable[[str], None] | None = None) -> None:
         if not Path(apk).is_file():
             raise BackendError(f"找不到安装包：{apk}")
@@ -392,6 +408,8 @@ class WaydroidBackend(AndroidBackend):
                         "安装失败：该应用只包含 ARM 原生库，当前容器缺少 ARM 转译层。"
                     )
                 raise BackendError(f"安装失败：{last}")
+            # Grant root to the freshly installed app (if a Root env exists).
+            self._grant_all_root()
         finally:
             try:
                 dest.unlink()

@@ -1,10 +1,7 @@
 {
-  "version": "0.1.0",
+  "version": "0.1.1",
   "date": "2026-10-11",
-  "notes": "首个公开版本。\n\n- 通过 Waydroid 容器在 Linux 上安装并运行 Android 应用（APK）\n- 图形化安装界面、应用库、一键启动/卸载、打开 Android 桌面\n- 可选 Root 环境：启动时询问，自动安装 Magisk 与 Shamiko 隐藏模块",
+  "notes": "修复 Root 环境相关问题。\n\n- 修复：应用无法获取 / 检测到 Root（su 因等待授权弹窗而卡住）\n- 安装应用时自动为其授予 Root，新装应用也不再卡\n- 说明：Shizuku、Termux、MT管理器 等现在可正常使用 Root",
   "url": "https://qiuqiu2017.github.io/droiddeck/",
-  "assets": {
-    "droiddeck_0.1.0_amd64.deb": "https://github.com/Qiuqiu2017/droiddeck/releases/download/v0.1.0/droiddeck_0.1.0_amd64.deb",
-    "droiddeck-linux-x86_64.tar.gz": "https://github.com/Qiuqiu2017/droiddeck/releases/download/v0.1.0/droiddeck-linux-x86_64.tar.gz"
-  }
+  "assets": {}
 }
