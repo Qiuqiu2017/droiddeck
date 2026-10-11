@@ -57,7 +57,7 @@ DroidDeck 只是 Waydroid 的一个图形前端：它负责安装、枚举、启
 - `weston`（X11 桌面下用于嵌套 Wayland 合成器）
 - Python ≥ 3.9 与 PySide6 ≥ 6.5
 
-Debian / Ubuntu / Kali：
+Debian 系 Linux：
 
 ```bash
 sudo apt install waydroid weston python3-pyside6.qtwidgets
