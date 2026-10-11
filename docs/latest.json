@@ -1,10 +1,10 @@
 {
-  "version": "0.1.1",
+  "version": "0.2.0",
   "date": "2026-10-11",
-  "notes": "修复 Root 环境相关问题。\n\n- 修复：应用无法获取 / 检测到 Root（su 因等待授权弹窗而卡住）\n- 安装应用时自动为其授予 Root，新装应用也不再卡\n- 说明：Shizuku、Termux、MT管理器 等现在可正常使用 Root",
+  "notes": "新增「防格机保护」模块。\n\n- 新增：防格机保护（Root 环境下随 Root 一并安装，默认开启）\n  - 拦截格式化分区（mkfs/mke2fs/make_ext4fs/wipe）\n  - 拦截向块设备与关键分区的 dd 写入\n  - 拦截对 /、/data、/system、/vendor、/sdcard 等根目录的 rm\n- 启动弹窗增加「启用防格机保护」选项（默认勾选）",
   "url": "https://qiuqiu2017.github.io/droiddeck/",
   "assets": {
-    "droiddeck_0.1.1_amd64.deb": "https://github.com/Qiuqiu2017/droiddeck/releases/download/v0.1.1/droiddeck_0.1.1_amd64.deb",
-    "droiddeck-linux-x86_64.tar.gz": "https://github.com/Qiuqiu2017/droiddeck/releases/download/v0.1.1/droiddeck-linux-x86_64.tar.gz"
+    "droiddeck_0.2.0_amd64.deb": "https://github.com/Qiuqiu2017/droiddeck/releases/download/v0.2.0/droiddeck_0.2.0_amd64.deb",
+    "droiddeck-linux-x86_64.tar.gz": "https://github.com/Qiuqiu2017/droiddeck/releases/download/v0.2.0/droiddeck-linux-x86_64.tar.gz"
   }
 }

@@ -42,6 +42,11 @@ class RootPromptDialog(QDialog):
         self.check.setStyleSheet("font-weight:600; padding:6px 0;")
         lay.addWidget(self.check)
 
+        self.armor = QCheckBox("启用防格机保护（拦截格式化 / 清空分区等危险操作）")
+        self.armor.setChecked(True)
+        self.armor.setStyleSheet("padding:2px 0 6px 22px;")
+        lay.addWidget(self.armor)
+
         row = QHBoxLayout()
         row.addStretch(1)
         later = QPushButton("稍后再说")
@@ -58,3 +63,7 @@ class RootPromptDialog(QDialog):
     @property
     def enabled(self) -> bool:
         return self.check.isChecked()
+
+    @property
+    def armor_enabled(self) -> bool:
+        return self.armor.isChecked()

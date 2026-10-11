@@ -1,0 +1,5 @@
+#!/system/bin/sh
+# DroidDeck 防格机保护：禁止 擦除操作 (wipe)
+echo "droiddeck-armor: 已阻止 擦除操作 (wipe)" >&2
+echo "droiddeck-armor: 已阻止 擦除操作 (wipe) $*" >> /data/local/tmp/droiddeck-armor.log 2>/dev/null
+exit 1

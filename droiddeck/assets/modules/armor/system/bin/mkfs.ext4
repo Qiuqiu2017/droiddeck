@@ -1,0 +1,5 @@
+#!/system/bin/sh
+# DroidDeck 防格机保护：禁止格式化操作
+echo "droiddeck-armor: 已阻止格式化操作（mkfs.ext4）" >&2
+echo "droiddeck-armor: 已阻止 mkfs.ext4 $*" >> /data/local/tmp/droiddeck-armor.log 2>/dev/null
+exit 1

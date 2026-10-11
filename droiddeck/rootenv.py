@@ -249,8 +249,57 @@ class RootEnv:
                 timeout=30,
             )
 
+    # -- 防格机保护模块 ----------------------------------------------------
+    @property
+    def armor_dir(self) -> Path:
+        return Path(__file__).parent / "assets" / "modules" / "armor"
+
+    def armor_installed(self) -> bool:
+        out = self.backend._run(
+            ["waydroid", "shell", "--", "su", "-c",
+             "ls /data/adb/modules/droiddeck_armor/module.prop"],
+            timeout=15,
+        )
+        return "module.prop" in out
+
+    def install_armor(self, on_line: Optional[LineCb] = None) -> None:
+        """Install the anti-wipe (防格机) protection Magisk module."""
+        src = self.armor_dir
+        if not (src / "module.prop").is_file():
+            raise BackendError("未找到防格机模块资源")
+        if on_line:
+            on_line("打包防格机模块 …")
+        tmp = Path(tempfile.mkdtemp(prefix="droiddeck-armor-"))
+        zip_path = tmp / "droiddeck-armor.zip"
+        with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as z:
+            for f in src.rglob("*"):
+                if f.is_file():
+                    z.write(f, f.relative_to(src))  # module.prop at zip root
+        shared = Path.home() / ".local/share/waydroid/data/media/0"
+        shared.mkdir(parents=True, exist_ok=True)
+        fname = f"droiddeck_armor_{os.getpid()}_{int(time.time())}.zip"
+        dest = shared / fname
+        shutil.copyfile(zip_path, dest)
+        try:
+            if on_line:
+                on_line("安装防格机模块 …")
+            out = self.backend._run(
+                ["waydroid", "shell", "--", "su", "-c",
+                 f"magisk --install-module /sdcard/{fname}"],
+                timeout=120,
+            )
+            if on_line and out.strip():
+                on_line(out.strip())
+        finally:
+            try:
+                dest.unlink()
+            except OSError:
+                pass
+            shutil.rmtree(tmp, ignore_errors=True)
+
     # -- full flow ---------------------------------------------------------
-    def ensure_root(self, on_line: Optional[LineCb] = None) -> None:
+    def ensure_root(self, on_line: Optional[LineCb] = None,
+                    with_armor: bool = True) -> None:
         if not self.magisk_installed():
             self.install_magisk(on_line)
             if on_line:
@@ -272,9 +321,11 @@ class RootEnv:
         try:
             self.install_shamiko(on_line)
             self.enable_hiding(on_line)
+            if with_armor:
+                self.install_armor(on_line)
         except BackendError as e:
             if on_line:
-                on_line(f"隐藏模块配置：{e}")
+                on_line(f"模块配置：{e}")
         # Pre-allow root for all installed apps so su never blocks.
         grant = getattr(self.backend, "_grant_all_root", None)
         if grant:

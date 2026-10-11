@@ -1,0 +1,6 @@
+id=droiddeck_armor
+name=DroidDeck 防格机保护
+version=1.0
+versionCode=1
+author=DroidDeck
+description=拦截格机操作：格式化分区、清空 /data、/system，向块设备写入等。由 DroidDeck 提供。

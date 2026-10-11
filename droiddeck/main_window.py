@@ -161,14 +161,20 @@ class MainWindow(QWidget):
         self.settings.set("root_enabled", dlg.enabled)
         if not dlg.enabled:
             return
-        if not installed or not self.settings.get("root_ready", False):
+        self._armor = dlg.armor_enabled
+        need = (
+            not installed
+            or not self.settings.get("root_ready", False)
+            or (self._armor and not self.rootenv.armor_installed())
+        )
+        if need:
             TaskDialog("配置 Root 环境",
                        self._do_root_install, self).exec()
             self.settings.set("root_ready", True)
             self._refresh()
 
     def _do_root_install(self, log):
-        self.rootenv.ensure_root(log)
+        self.rootenv.ensure_root(log, with_armor=getattr(self, "_armor", True))
 
     # ------------------------------------------------------------------ UI
     def _build_sidebar(self) -> QWidget:

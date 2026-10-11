@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "droiddeck"
-version = "0.1.1"
+version = "0.2.0"
 description = "Cross-platform front-end for running Android apps (APK) via the Waydroid container on Linux."
 readme = "README.md"
 requires-python = ">=3.9"
@@ -23,4 +23,4 @@ droiddeck-gui = "droiddeck.__main__:main"
 include = ["droiddeck*"]
 
 [tool.setuptools.package-data]
-droiddeck = ["assets/*"]
+droiddeck = ["assets/*", "assets/**/*"]

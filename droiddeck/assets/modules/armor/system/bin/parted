@@ -1,0 +1,5 @@
+#!/system/bin/sh
+# DroidDeck 防格机保护：禁止 分区工具 (parted)
+echo "droiddeck-armor: 已阻止 分区工具 (parted)" >&2
+echo "droiddeck-armor: 已阻止 分区工具 (parted) $*" >> /data/local/tmp/droiddeck-armor.log 2>/dev/null
+exit 1

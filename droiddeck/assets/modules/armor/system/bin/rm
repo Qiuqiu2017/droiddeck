@@ -1,0 +1,23 @@
+#!/system/bin/sh
+# DroidDeck 防格机保护：rm 守卫
+# 拦截对关键分区根目录与块设备的删除；普通文件删除照常放行。
+for a in "$@"; do
+  case "$a" in
+    -*) continue ;;
+  esac
+  n="$a"
+  while [ "${n%/}" != "$n" ] && [ -n "$n" ]; do n="${n%/}"; done
+  case "$n" in
+    ""|/|. ) n="/" ;;
+  esac
+  case "$n" in
+    /|/data|/system|/system_root|/vendor|/product|/sdcard|/storage|/cache|/metadata|/mnt|/dev|/efs|/persist|/firmware)
+      echo "droiddeck-armor: 已阻止危险的 rm 操作：$a" >&2
+      echo "droiddeck-armor: 已阻止 rm $a" >> /data/local/tmp/droiddeck-armor.log 2>/dev/null
+      exit 1 ;;
+    /dev/block|/dev/block/*)
+      echo "droiddeck-armor: 已阻止对块设备的 rm：$a" >&2
+      exit 1 ;;
+  esac
+done
+exec /system/bin/toybox rm "$@"

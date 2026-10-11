@@ -1,0 +1,18 @@
+#!/system/bin/sh
+# DroidDeck 防格机保护：dd 守卫
+# 拦截向块设备 / 关键分区的写入。
+out=""
+from=""
+for a in "$@"; do
+  case "$a" in
+    of=*) out="${a#of=}" ;;
+    if=*) from="${a#if=}" ;;
+  esac
+done
+case "$out" in
+  /dev/block/*|/dev/*|/system|/system/*|/vendor|/vendor/*|/boot|/recovery|/data|/sdcard|/storage/*)
+    echo "droiddeck-armor: 已阻止危险的 dd 写入目标：of=$out" >&2
+    echo "droiddeck-armor: 已阻止 dd of=$out if=$from" >> /data/local/tmp/droiddeck-armor.log 2>/dev/null
+    exit 1 ;;
+esac
+exec /system/bin/toybox dd "$@"
