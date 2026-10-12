@@ -1,10 +1,10 @@
 {
-  "version": "0.5.1",
-  "date": "2026-10-12 19:00",
-  "notes": "健壮性改进。\n\n- 未安装 Waydroid 时，应用库给出明确提示（含安装命令），而非笼统的「未初始化」\n- 非 Linux 平台提示「当前平台暂不支持」",
+  "version": "0.6.0",
+  "date": "2026-10-12 19:04",
+  "notes": "新增单实例运行。\n\n- 重复打开 DroidDeck 时，不再弹出第二个窗口，而是把已有的窗口带到前台\n- 避免多个实例同时操作容器造成混乱",
   "url": "https://qiuqiu2017.github.io/droiddeck/",
   "assets": {
-    "droiddeck_0.5.1_amd64.deb": "https://github.com/Qiuqiu2017/droiddeck/releases/download/v0.5.1/droiddeck_0.5.1_amd64.deb",
-    "droiddeck-linux-x86_64.tar.gz": "https://github.com/Qiuqiu2017/droiddeck/releases/download/v0.5.1/droiddeck-linux-x86_64.tar.gz"
+    "droiddeck_0.6.0_amd64.deb": "https://github.com/Qiuqiu2017/droiddeck/releases/download/v0.6.0/droiddeck_0.6.0_amd64.deb",
+    "droiddeck-linux-x86_64.tar.gz": "https://github.com/Qiuqiu2017/droiddeck/releases/download/v0.6.0/droiddeck-linux-x86_64.tar.gz"
   }
 }

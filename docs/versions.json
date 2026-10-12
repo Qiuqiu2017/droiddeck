@@ -1,6 +1,23 @@
 {
-  "latest": "0.5.1",
+  "latest": "0.6.0",
   "versions": [
+    {
+      "version": "0.6.0",
+      "date": "2026-10-12 19:04",
+      "notes": "新增单实例运行。\n\n- 重复打开 DroidDeck 时，不再弹出第二个窗口，而是把已有的窗口带到前台\n- 避免多个实例同时操作容器造成混乱",
+      "assets": [
+        {
+          "name": "droiddeck_0.6.0_amd64.deb",
+          "url": "https://github.com/Qiuqiu2017/droiddeck/releases/download/v0.6.0/droiddeck_0.6.0_amd64.deb",
+          "size": "46.2 MB"
+        },
+        {
+          "name": "droiddeck-linux-x86_64.tar.gz",
+          "url": "https://github.com/Qiuqiu2017/droiddeck/releases/download/v0.6.0/droiddeck-linux-x86_64.tar.gz",
+          "size": "64.7 MB"
+        }
+      ]
+    },
     {
       "version": "0.5.1",
       "date": "2026-10-12 19:00",
