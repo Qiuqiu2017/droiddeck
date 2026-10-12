@@ -205,7 +205,12 @@ class MainWindow(QWidget):
         try:
             selfupdate.start(info)
         except Exception as e:  # noqa: BLE001
-            QMessageBox.warning(self, "更新失败", f"无法启动更新：{e}")
+            url = info.download_url() or info.page_url
+            if url and self._open_url(url):
+                QMessageBox.warning(
+                    self, "无法静默更新", f"已改为打开下载页，请手动安装。\n\n{e}")
+            else:
+                QMessageBox.warning(self, "更新失败", f"无法启动更新：{e}")
             return
         QMessageBox.information(
             self, "正在更新",
@@ -375,9 +380,8 @@ class MainWindow(QWidget):
 
         self.hostprot_check = QCheckBox("启用宿主机隔离（阻止容器触达宿主机磁盘）")
         self.hostprot_check.setStyleSheet("padding:2px 0 2px 22px;")
-        from . import hostprotect
-        self.hostprot_check.setChecked(hostprotect.status() != "disabled")
-        self.hostprot_check.setEnabled(False)  # 安全项，始终开启
+        self.hostprot_check.setChecked(True)   # 安全项，始终开启
+        self.hostprot_check.setEnabled(False)
         cl.addWidget(self.hostprot_check)
 
         hint = QLabel("防格机模块依赖 Root 环境；宿主机隔离为安全项，始终开启。")

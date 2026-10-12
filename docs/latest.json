@@ -1,10 +1,10 @@
 {
-  "version": "0.3.4",
-  "date": "2026-10-12 18:25",
-  "notes": "静默更新增强：非 root 用户也可升级。\n\n- 静默更新在非 root 环境下改用 sudo -n 安装\n- 需系统已配置该用户的免密 sudo；否则回退为重新打开旧版本",
+  "version": "0.3.5",
+  "date": "2026-10-12 18:40",
+  "notes": "自测修复。\n\n- 修复静默更新脚本会匹配到自身、导致每次多等 60 秒的问题\n- 设置页「启用宿主机隔离」现在始终显示为已开启\n- 静默更新失败时改为打开下载页，方便手动安装",
   "url": "https://qiuqiu2017.github.io/droiddeck/",
   "assets": {
-    "droiddeck_0.3.4_amd64.deb": "https://github.com/Qiuqiu2017/droiddeck/releases/download/v0.3.4/droiddeck_0.3.4_amd64.deb",
-    "droiddeck-linux-x86_64.tar.gz": "https://github.com/Qiuqiu2017/droiddeck/releases/download/v0.3.4/droiddeck-linux-x86_64.tar.gz"
+    "droiddeck_0.3.5_amd64.deb": "https://github.com/Qiuqiu2017/droiddeck/releases/download/v0.3.5/droiddeck_0.3.5_amd64.deb",
+    "droiddeck-linux-x86_64.tar.gz": "https://github.com/Qiuqiu2017/droiddeck/releases/download/v0.3.5/droiddeck-linux-x86_64.tar.gz"
   }
 }

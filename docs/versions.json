@@ -1,6 +1,23 @@
 {
-  "latest": "0.3.4",
+  "latest": "0.3.5",
   "versions": [
+    {
+      "version": "0.3.5",
+      "date": "2026-10-12 18:40",
+      "notes": "自测修复。\n\n- 修复静默更新脚本会匹配到自身、导致每次多等 60 秒的问题\n- 设置页「启用宿主机隔离」现在始终显示为已开启\n- 静默更新失败时改为打开下载页，方便手动安装",
+      "assets": [
+        {
+          "name": "droiddeck_0.3.5_amd64.deb",
+          "url": "https://github.com/Qiuqiu2017/droiddeck/releases/download/v0.3.5/droiddeck_0.3.5_amd64.deb",
+          "size": "46.2 MB"
+        },
+        {
+          "name": "droiddeck-linux-x86_64.tar.gz",
+          "url": "https://github.com/Qiuqiu2017/droiddeck/releases/download/v0.3.5/droiddeck-linux-x86_64.tar.gz",
+          "size": "64.7 MB"
+        }
+      ]
+    },
     {
       "version": "0.3.4",
       "date": "2026-10-12 18:25",
