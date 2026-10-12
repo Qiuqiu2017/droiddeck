@@ -1,10 +1,10 @@
 {
-  "version": "0.3.3",
-  "date": "2026-10-12 18:16",
-  "notes": "更新与提示优化。\n\n- 更新方式改为静默更新：点「更新」后软件关闭，后台下载并安装，完成后自动重新打开并提示「更新完成」\n- 「前往下载」按钮更名为「更新」\n- 关于页与官网新增提示：不建议在 Windows 系统中使用，请改用 WSA\n- 修复：更新弹窗「前往下载/更新」按钮点击无反应\n- 历史版本发布日期现在精确到分，并修正为真实发布时间\n- 新增导航站：qiuqiu2017.github.io",
+  "version": "0.3.4",
+  "date": "2026-10-12 18:25",
+  "notes": "静默更新增强：非 root 用户也可升级。\n\n- 静默更新在非 root 环境下改用 sudo -n 安装\n- 需系统已配置该用户的免密 sudo；否则回退为重新打开旧版本",
   "url": "https://qiuqiu2017.github.io/droiddeck/",
   "assets": {
-    "droiddeck_0.3.3_amd64.deb": "https://github.com/Qiuqiu2017/droiddeck/releases/download/v0.3.3/droiddeck_0.3.3_amd64.deb",
-    "droiddeck-linux-x86_64.tar.gz": "https://github.com/Qiuqiu2017/droiddeck/releases/download/v0.3.3/droiddeck-linux-x86_64.tar.gz"
+    "droiddeck_0.3.4_amd64.deb": "https://github.com/Qiuqiu2017/droiddeck/releases/download/v0.3.4/droiddeck_0.3.4_amd64.deb",
+    "droiddeck-linux-x86_64.tar.gz": "https://github.com/Qiuqiu2017/droiddeck/releases/download/v0.3.4/droiddeck-linux-x86_64.tar.gz"
   }
 }

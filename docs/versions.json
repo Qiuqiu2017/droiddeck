@@ -1,6 +1,23 @@
 {
-  "latest": "0.3.3",
+  "latest": "0.3.4",
   "versions": [
+    {
+      "version": "0.3.4",
+      "date": "2026-10-12 18:25",
+      "notes": "静默更新增强：非 root 用户也可升级。\n\n- 静默更新在非 root 环境下改用 sudo -n 安装\n- 需系统已配置该用户的免密 sudo；否则回退为重新打开旧版本",
+      "assets": [
+        {
+          "name": "droiddeck_0.3.4_amd64.deb",
+          "url": "https://github.com/Qiuqiu2017/droiddeck/releases/download/v0.3.4/droiddeck_0.3.4_amd64.deb",
+          "size": "46.2 MB"
+        },
+        {
+          "name": "droiddeck-linux-x86_64.tar.gz",
+          "url": "https://github.com/Qiuqiu2017/droiddeck/releases/download/v0.3.4/droiddeck-linux-x86_64.tar.gz",
+          "size": "64.7 MB"
+        }
+      ]
+    },
     {
       "version": "0.3.3",
       "date": "2026-10-12 18:16",
