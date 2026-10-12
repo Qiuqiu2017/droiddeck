@@ -1,6 +1,23 @@
 {
-  "latest": "0.4.0",
+  "latest": "0.5.0",
   "versions": [
+    {
+      "version": "0.5.0",
+      "date": "2026-10-12 18:57",
+      "notes": "关于页新增环境信息。\n\n- 关于页显示：容器状态、Android 版本、容器 IP、Root 环境、宿主机隔离状态",
+      "assets": [
+        {
+          "name": "droiddeck_0.5.0_amd64.deb",
+          "url": "https://github.com/Qiuqiu2017/droiddeck/releases/download/v0.5.0/droiddeck_0.5.0_amd64.deb",
+          "size": "46.2 MB"
+        },
+        {
+          "name": "droiddeck-linux-x86_64.tar.gz",
+          "url": "https://github.com/Qiuqiu2017/droiddeck/releases/download/v0.5.0/droiddeck-linux-x86_64.tar.gz",
+          "size": "64.7 MB"
+        }
+      ]
+    },
     {
       "version": "0.4.0",
       "date": "2026-10-12 18:53",

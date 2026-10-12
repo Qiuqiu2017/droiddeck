@@ -1,0 +1,6 @@
+{
+  "version": "0.5.0",
+  "date": "2026-10-12 18:57",
+  "notes": "关于页新增环境信息。\n\n- 关于页显示：容器状态、Android 版本、容器 IP、Root 环境、宿主机隔离状态",
+  "assets": ["droiddeck_0.5.0_amd64.deb","droiddeck-linux-x86_64.tar.gz"]
+}

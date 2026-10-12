@@ -249,6 +249,23 @@ class WaydroidBackend(AndroidBackend):
             time.sleep(1)
         raise BackendError("Waydroid 会话启动超时")
 
+    def env_info(self) -> dict:
+        """Collect environment info for the About page."""
+        st = self.state()
+        info = {"session": st.session, "initialized": st.initialized}
+        out = self._run(["waydroid", "status"], timeout=8)
+        for line in out.splitlines():
+            if ":" in line:
+                k, v = line.split(":", 1)
+                info[k.strip()] = v.strip()
+        if st.session == "RUNNING":
+            av = self._run(
+                ["waydroid", "shell", "--", "getprop",
+                 "ro.build.version.release"], timeout=10).strip()
+            if av:
+                info["Android"] = av
+        return info
+
     def restart_session(self, on_line: Callable[[str], None] | None = None) -> None:
         """Stop then start the session (used by the 重启容器 button)."""
         self._run(["waydroid", "session", "stop"], timeout=40)

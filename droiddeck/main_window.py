@@ -127,6 +127,7 @@ class MainWindow(QWidget):
         self.stack.addWidget(self._build_library_page())   # 0
         self.stack.addWidget(self._build_settings_page())  # 1
         self.stack.addWidget(self._build_about_page())     # 2
+        self.stack.currentChanged.connect(self._on_page_changed)
         root.addWidget(self.stack, 1)
 
         # First refresh only — do NOT auto-start the container. The user
@@ -523,8 +524,55 @@ class MainWindow(QWidget):
         cl.addLayout(row)
 
         lay.addWidget(card)
+
+        env_card = QFrame()
+        env_card.setObjectName("Card")
+        el = QVBoxLayout(env_card)
+        el.setContentsMargins(18, 18, 18, 18)
+        el.setSpacing(4)
+        eh = QLabel("环境")
+        eh.setObjectName("H2")
+        el.addWidget(eh)
+        self.env_labels = {}
+        for key in ("容器", "Android", "IP", "Root 环境", "宿主机隔离"):
+            rowk = QHBoxLayout()
+            k = QLabel(key)
+            k.setObjectName("DimSmall")
+            k.setFixedWidth(90)
+            v = QLabel("—")
+            v.setObjectName("DimSmall")
+            rowk.addWidget(k)
+            rowk.addWidget(v)
+            rowk.addStretch(1)
+            el.addLayout(rowk)
+            self.env_labels[key] = v
+        lay.addWidget(env_card)
+
         lay.addStretch(1)
         return page
+
+    def _on_page_changed(self, idx: int):
+        if idx == 2:
+            self._refresh_env_info()
+
+    def _refresh_env_info(self):
+        if not hasattr(self, "env_labels"):
+            return
+        try:
+            info = self.backend.env_info() if hasattr(self.backend, "env_info") else {}
+        except Exception:  # noqa: BLE001
+            info = {}
+        self.env_labels["容器"].setText(info.get("Container", "—"))
+        self.env_labels["Android"].setText(info.get("Android", "—"))
+        self.env_labels["IP"].setText(info.get("IP address", "—"))
+        root = "已启用" if (self.rootenv and self.rootenv.magisk_installed()) else "未启用"
+        self.env_labels["Root 环境"].setText(root)
+        try:
+            from . import hostprotect
+            hp = "已启用" if hostprotect.status() == "enabled" else "—"
+        except Exception:  # noqa: BLE001
+            hp = "—"
+        self.env_labels["宿主机隔离"].setText(hp)
 
     # ------------------------------------------------------------- actions
     def _pick_apk(self):
