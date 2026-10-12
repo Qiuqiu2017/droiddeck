@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "droiddeck"
-version = "0.3.2"
+version = "0.3.3"
 description = "Cross-platform front-end for running Android apps (APK) via the Waydroid container on Linux."
 readme = "README.md"
 requires-python = ">=3.9"

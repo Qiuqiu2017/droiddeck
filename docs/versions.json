@@ -1,9 +1,26 @@
 {
-  "latest": "0.3.2",
+  "latest": "0.3.3",
   "versions": [
     {
+      "version": "0.3.3",
+      "date": "2026-10-12 18:16",
+      "notes": "更新与提示优化。\n\n- 更新方式改为静默更新：点「更新」后软件关闭，后台下载并安装，完成后自动重新打开并提示「更新完成」\n- 「前往下载」按钮更名为「更新」\n- 关于页与官网新增提示：不建议在 Windows 系统中使用，请改用 WSA\n- 修复：更新弹窗「前往下载/更新」按钮点击无反应\n- 历史版本发布日期现在精确到分，并修正为真实发布时间\n- 新增导航站：qiuqiu2017.github.io",
+      "assets": [
+        {
+          "name": "droiddeck_0.3.3_amd64.deb",
+          "url": "https://github.com/Qiuqiu2017/droiddeck/releases/download/v0.3.3/droiddeck_0.3.3_amd64.deb",
+          "size": "46.2 MB"
+        },
+        {
+          "name": "droiddeck-linux-x86_64.tar.gz",
+          "url": "https://github.com/Qiuqiu2017/droiddeck/releases/download/v0.3.3/droiddeck-linux-x86_64.tar.gz",
+          "size": "64.7 MB"
+        }
+      ]
+    },
+    {
       "version": "0.3.2",
-      "date": "2026-10-11",
+      "date": "2026-10-12 18:03",
       "notes": "Root 环境与设置体验优化。\n\n- Root 环境询问弹窗仅在首次启动时出现，不再每次都弹\n- 新增「设置」页：\n  - 独立的「启用 Root 环境」选项（需点「保存并应用」生效）\n  - 「启用防格机模块」子项：父项未启用时置灰不可改\n- 防格机、宿主机隔离等安全项状态在设置页可见",
       "assets": [
         {
@@ -20,7 +37,7 @@
     },
     {
       "version": "0.3.1",
-      "date": "2026-10-11",
+      "date": "2026-10-11 22:01",
       "notes": "「关于」页更新说明。\n\n- 关于页显示当前版本号与更新服务器地址\n- 「检查更新」按钮旁显示检查结果（已是最新 / 发现新版本 / 检查失败）\n- 更新服务器：https://qiuqiu2017.github.io/droiddeck\n- 启动时仍会自动静默检查更新，发现新版本弹窗提示",
       "assets": [
         {
@@ -37,7 +54,7 @@
     },
     {
       "version": "0.3.0",
-      "date": "2026-10-11",
+      "date": "2026-10-11 21:47",
       "notes": "新增「宿主机隔离」——即使容器被格机，宿主机也安全。\n\n- 新增：给 Waydroid 的 LXC 容器加 cgroup v2 设备白名单\n  - 只放行字符设备与 loop 块设备\n  - 宿主机磁盘（/dev/sd*、/dev/nvme* 等）被彻底隔离，容器 root 也无法读写\n- 即使容器内格机脚本绕过了防格机模块，宿主机系统不受影响\n- 修正防格机模块 dd 规则对 /dev/null、/dev/zero 的误拦截",
       "assets": [
         {
@@ -54,7 +71,7 @@
     },
     {
       "version": "0.2.0",
-      "date": "2026-10-11",
+      "date": "2026-10-11 21:38",
       "notes": "新增「防格机保护」模块。\n\n- 新增：防格机保护（Root 环境下随 Root 一并安装，默认开启）\n  - 拦截格式化分区（mkfs/mke2fs/make_ext4fs/wipe）\n  - 拦截向块设备与关键分区的 dd 写入\n  - 拦截对 /、/data、/system、/vendor、/sdcard 等根目录的 rm\n- 启动弹窗增加「启用防格机保护」选项（默认勾选）",
       "assets": [
         {
@@ -71,7 +88,7 @@
     },
     {
       "version": "0.1.1",
-      "date": "2026-10-11",
+      "date": "2026-10-11 21:25",
       "notes": "修复 Root 环境相关问题。\n\n- 修复：应用无法获取 / 检测到 Root（su 因等待授权弹窗而卡住）\n- 安装应用时自动为其授予 Root，新装应用也不再卡\n- 说明：Shizuku、Termux、MT管理器 等现在可正常使用 Root",
       "assets": [
         {
@@ -88,7 +105,7 @@
     },
     {
       "version": "0.1.0",
-      "date": "2026-10-11",
+      "date": "2026-10-11 11:59",
       "notes": "首个公开版本。\n\n- 通过 Waydroid 容器在 Linux 上安装并运行 Android 应用（APK）\n- 图形化安装界面、应用库、一键启动/卸载、打开 Android 桌面\n- 可选 Root 环境：启动时询问，自动安装 Magisk 与 Shamiko 隐藏模块",
       "assets": [
         {

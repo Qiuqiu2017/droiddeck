@@ -1,6 +1,6 @@
 {
   "version": "0.1.1",
-  "date": "2026-10-11",
+  "date": "2026-10-11 21:25",
   "notes": "修复 Root 环境相关问题。\n\n- 修复：应用无法获取 / 检测到 Root（su 因等待授权弹窗而卡住）\n- 安装应用时自动为其授予 Root，新装应用也不再卡\n- 说明：Shizuku、Termux、MT管理器 等现在可正常使用 Root",
   "assets": [
     "droiddeck_0.1.1_amd64.deb",

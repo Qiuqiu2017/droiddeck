@@ -117,6 +117,7 @@ class MainWindow(QWidget):
         self.timer.start()
 
         QTimer.singleShot(400, self._prompt_root)
+        QTimer.singleShot(600, self._check_update_done)
         QTimer.singleShot(3000, lambda: self._check_updates(manual=False))
 
     # --------------------------------------------------------- update check
@@ -148,23 +149,74 @@ class MainWindow(QWidget):
             QMessageBox.warning(
                 self, "检查更新", f"无法连接更新服务器：{err}")
 
+    def _open_url(self, url: str) -> bool:
+        """Open a URL in the browser; falls back to clipboard copy."""
+        if not url:
+            return False
+        from PySide6.QtGui import QGuiApplication, QDesktopServices
+        from PySide6.QtCore import QUrl
+        try:
+            QGuiApplication.clipboard().setText(url)
+        except Exception:  # noqa: BLE001
+            pass
+        opened = False
+        try:
+            opened = bool(QDesktopServices.openUrl(QUrl(url)))
+        except Exception:  # noqa: BLE001
+            opened = False
+        if not opened:
+            import shutil, subprocess
+            for opener in ("xdg-open", "gio", "gio open"):
+                exe = shutil.which(opener.split()[0])
+                if exe:
+                    try:
+                        subprocess.Popen([exe, *opener.split()[1:], url])
+                        opened = True
+                        break
+                    except Exception:  # noqa: BLE001
+                        continue
+        return opened
+
     def _show_update(self, info: "updater.UpdateInfo"):
         self._set_update_status(
             f"发现新版本 v{info.version}（当前 v{__version__}）", "ok")
+        url = info.download_url() or info.page_url
         box = QMessageBox(self)
         box.setWindowTitle("发现新版本")
         box.setText(f"发现新版本 v{info.version}（当前 v{__version__}）")
         if info.notes:
             box.setInformativeText(info.notes)
-        go = box.addButton("前往下载", QMessageBox.AcceptRole)
+        box.setDetailedText(url or "")
+        go = box.addButton("更新", QMessageBox.AcceptRole)
+        copy_btn = box.addButton("复制链接", QMessageBox.ActionRole)
         box.addButton("稍后", QMessageBox.RejectRole)
         box.exec()
-        if box.clickedButton() is go:
-            url = info.download_url() or info.page_url
-            if url:
-                from PySide6.QtGui import QDesktopServices
-                from PySide6.QtCore import QUrl
-                QDesktopServices.openUrl(QUrl(url))
+        clicked = box.clickedButton()
+        if clicked is copy_btn:
+            from PySide6.QtGui import QGuiApplication
+            QGuiApplication.clipboard().setText(url or "")
+            QMessageBox.information(self, "已复制", f"下载链接已复制：\n{url}")
+        elif clicked is go:
+            self._silent_update(info)
+
+    def _silent_update(self, info):
+        from PySide6.QtWidgets import QApplication
+        from . import selfupdate
+        try:
+            selfupdate.start(info)
+        except Exception as e:  # noqa: BLE001
+            QMessageBox.warning(self, "更新失败", f"无法启动更新：{e}")
+            return
+        QMessageBox.information(
+            self, "正在更新",
+            "软件将关闭，并在后台下载、安装新版本，完成后会自动重新打开。")
+        QApplication.quit()
+
+    def _check_update_done(self):
+        from . import selfupdate
+        ver = selfupdate.take_completed()
+        if ver:
+            QMessageBox.information(self, "更新完成", f"已更新到 v{ver}。")
 
     # ------------------------------------------------------------ root env
     def _prompt_root(self):
@@ -399,6 +451,7 @@ class MainWindow(QWidget):
             "<p><b>DroidDeck</b> 是一个跨平台的 Android 应用运行器前端。</p>"
             "<p>在 Linux 上，它通过 <b>Waydroid</b> 容器运行安卓应用，"
             "应用运行在隔离的 Android 系统（LineageOS）中。</p>"
+            "<p><b>不建议在 Windows 系统中使用；如果是 Windows 系统，请改用 WSA。</b></p>"
             "<p>本软件为开源项目，遵循 GPL-3.0 许可。</p>"
         )
         about.setWordWrap(True)
@@ -414,11 +467,6 @@ class MainWindow(QWidget):
         self.version_lbl = QLabel(f"当前版本　v{__version__}")
         self.version_lbl.setObjectName("H2")
         cl.addWidget(self.version_lbl)
-
-        server_lbl = QLabel("更新服务器　qiuqiu2017.github.io/droiddeck")
-        server_lbl.setObjectName("DimSmall")
-        server_lbl.setWordWrap(True)
-        cl.addWidget(server_lbl)
 
         self.update_status = QLabel("")
         self.update_status.setObjectName("DimSmall")

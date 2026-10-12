@@ -1,6 +1,6 @@
 {
   "version": "0.3.0",
-  "date": "2026-10-11",
+  "date": "2026-10-11 21:47",
   "notes": "新增「宿主机隔离」——即使容器被格机，宿主机也安全。\n\n- 新增：给 Waydroid 的 LXC 容器加 cgroup v2 设备白名单\n  - 只放行字符设备与 loop 块设备\n  - 宿主机磁盘（/dev/sd*、/dev/nvme* 等）被彻底隔离，容器 root 也无法读写\n- 即使容器内格机脚本绕过了防格机模块，宿主机系统不受影响\n- 修正防格机模块 dd 规则对 /dev/null、/dev/zero 的误拦截",
   "assets": [
     "droiddeck_0.3.0_amd64.deb",
