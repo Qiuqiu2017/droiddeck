@@ -27,6 +27,7 @@ class ContainerState:
     session: str = "STOPPED"      # STOPPED / RUNNING / STARTING
     container: str = "STOPPED"
     initialized: bool = False
+    installed: bool = True        # Waydroid present on this machine
     android_version: str = ""
     runtime_label: str = ""
 
@@ -197,6 +198,7 @@ class WaydroidBackend(AndroidBackend):
     def state(self) -> ContainerState:
         st = ContainerState()
         if not self.is_installed():
+            st.installed = False
             return st
         out = self._run(["waydroid", "status"], timeout=8)
         if not out:
@@ -509,7 +511,7 @@ class NullBackend(AndroidBackend):
     )
 
     def state(self) -> ContainerState:
-        return ContainerState()
+        return ContainerState(installed=False)
 
     def start_session(self, on_line=None) -> None:
         raise BackendError(self._MSG)

@@ -1,10 +1,10 @@
 {
-  "version": "0.5.0",
-  "date": "2026-10-12 18:57",
-  "notes": "关于页新增环境信息。\n\n- 关于页显示：容器状态、Android 版本、容器 IP、Root 环境、宿主机隔离状态",
+  "version": "0.5.1",
+  "date": "2026-10-12 19:00",
+  "notes": "健壮性改进。\n\n- 未安装 Waydroid 时，应用库给出明确提示（含安装命令），而非笼统的「未初始化」\n- 非 Linux 平台提示「当前平台暂不支持」",
   "url": "https://qiuqiu2017.github.io/droiddeck/",
   "assets": {
-    "droiddeck_0.5.0_amd64.deb": "https://github.com/Qiuqiu2017/droiddeck/releases/download/v0.5.0/droiddeck_0.5.0_amd64.deb",
-    "droiddeck-linux-x86_64.tar.gz": "https://github.com/Qiuqiu2017/droiddeck/releases/download/v0.5.0/droiddeck-linux-x86_64.tar.gz"
+    "droiddeck_0.5.1_amd64.deb": "https://github.com/Qiuqiu2017/droiddeck/releases/download/v0.5.1/droiddeck_0.5.1_amd64.deb",
+    "droiddeck-linux-x86_64.tar.gz": "https://github.com/Qiuqiu2017/droiddeck/releases/download/v0.5.1/droiddeck-linux-x86_64.tar.gz"
   }
 }

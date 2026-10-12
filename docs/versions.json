@@ -1,6 +1,23 @@
 {
-  "latest": "0.5.0",
+  "latest": "0.5.1",
   "versions": [
+    {
+      "version": "0.5.1",
+      "date": "2026-10-12 19:00",
+      "notes": "健壮性改进。\n\n- 未安装 Waydroid 时，应用库给出明确提示（含安装命令），而非笼统的「未初始化」\n- 非 Linux 平台提示「当前平台暂不支持」",
+      "assets": [
+        {
+          "name": "droiddeck_0.5.1_amd64.deb",
+          "url": "https://github.com/Qiuqiu2017/droiddeck/releases/download/v0.5.1/droiddeck_0.5.1_amd64.deb",
+          "size": "46.2 MB"
+        },
+        {
+          "name": "droiddeck-linux-x86_64.tar.gz",
+          "url": "https://github.com/Qiuqiu2017/droiddeck/releases/download/v0.5.1/droiddeck-linux-x86_64.tar.gz",
+          "size": "64.7 MB"
+        }
+      ]
+    },
     {
       "version": "0.5.0",
       "date": "2026-10-12 18:57",

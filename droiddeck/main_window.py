@@ -645,6 +645,12 @@ class MainWindow(QWidget):
         self._refresh()
 
     def _update_status(self, st: ContainerState):
+        if not getattr(st, "installed", True):
+            self.status_chip.setText("未安装")
+            self._set_chip_class(self.status_chip, "stop")
+            self.open_desktop_btn.setEnabled(False)
+            self.session_btn.setEnabled(False)
+            return
         if not st.initialized:
             self.status_chip.setText("未初始化")
             self._set_chip_class(self.status_chip, "warn")
@@ -681,7 +687,12 @@ class MainWindow(QWidget):
                 w.deleteLater()
 
         if not shown:
-            if apps and query:
+            if not getattr(st, "installed", True):
+                if isinstance(self.backend, WaydroidBackend):
+                    msg = "未检测到 Waydroid。请先安装：sudo apt install waydroid"
+                else:
+                    msg = "当前平台暂不支持运行 Android 应用。"
+            elif apps and query:
                 msg = f"没有匹配「{self.search.text().strip()}」的应用。"
             elif not st.initialized:
                 msg = "Waydroid 尚未初始化。"
