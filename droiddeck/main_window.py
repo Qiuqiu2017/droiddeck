@@ -6,9 +6,9 @@ from pathlib import Path
 
 from PySide6.QtCore import Qt, QTimer, QThread, Signal
 from PySide6.QtWidgets import (
-    QButtonGroup, QDialog, QFileDialog, QFrame, QGridLayout, QHBoxLayout,
-    QLabel, QMessageBox, QPushButton, QScrollArea, QSizePolicy, QStackedWidget,
-    QVBoxLayout, QWidget,
+    QButtonGroup, QCheckBox, QDialog, QFileDialog, QFrame, QGridLayout,
+    QHBoxLayout, QLabel, QMessageBox, QPushButton, QScrollArea, QSizePolicy,
+    QStackedWidget, QVBoxLayout, QWidget,
 )
 
 from . import theme
@@ -102,8 +102,9 @@ class MainWindow(QWidget):
         root.setSpacing(0)
         root.addWidget(self._build_sidebar())
         self.stack = QStackedWidget()
-        self.stack.addWidget(self._build_library_page())
-        self.stack.addWidget(self._build_about_page())
+        self.stack.addWidget(self._build_library_page())   # 0
+        self.stack.addWidget(self._build_settings_page())  # 1
+        self.stack.addWidget(self._build_about_page())     # 2
         root.addWidget(self.stack, 1)
 
         # First refresh only — do NOT auto-start the container. The user
@@ -167,8 +168,11 @@ class MainWindow(QWidget):
 
     # ------------------------------------------------------------ root env
     def _prompt_root(self):
-        if self.rootenv is None:
+        # Only ask once, on the very first launch. Afterwards the user manages
+        # this from the 设置 page.
+        if self.rootenv is None or self.settings.get("asked_root", False):
             return
+        self.settings.set("asked_root", True)
         installed = self.rootenv.magisk_installed()
         dlg = RootPromptDialog(
             default_checked=bool(self.settings.get("root_enabled", True)),
@@ -178,6 +182,7 @@ class MainWindow(QWidget):
         if dlg.exec() != QDialog.Accepted:
             return
         self.settings.set("root_enabled", dlg.enabled)
+        self.settings.set("armor_enabled", dlg.armor_enabled)
         if not dlg.enabled:
             return
         self._armor = dlg.armor_enabled
@@ -214,7 +219,7 @@ class MainWindow(QWidget):
 
         self.nav_buttons: list[QPushButton] = []
         group = QButtonGroup(self)
-        for label, target in [("应用库", 0), ("关于", 1)]:
+        for label, target in [("应用库", 0), ("设置", 1), ("关于", 2)]:
             b = QPushButton(label)
             b.setObjectName("Nav")
             b.setCheckable(True)
@@ -288,6 +293,99 @@ class MainWindow(QWidget):
         scroll.setWidget(self.grid_card)
         lay.addWidget(scroll, 1)
         return page
+
+    def _build_settings_page(self) -> QWidget:
+        page = QWidget()
+        lay = QVBoxLayout(page)
+        lay.setContentsMargins(26, 24, 26, 24)
+        lay.setSpacing(16)
+
+        h1 = QLabel("设置")
+        h1.setObjectName("H1")
+        lay.addWidget(h1)
+
+        card = QFrame()
+        card.setObjectName("Card")
+        cl = QVBoxLayout(card)
+        cl.setContentsMargins(20, 20, 20, 20)
+        cl.setSpacing(10)
+
+        self.root_check = QCheckBox("启用 Root 环境")
+        self.root_check.setStyleSheet("font-weight:600; padding:4px 0;")
+        self.root_check.setChecked(bool(self.settings.get("root_enabled", True)))
+        self.root_check.toggled.connect(self._on_root_toggled)
+        cl.addWidget(self.root_check)
+
+        self.armor_check = QCheckBox("启用防格机模块（拦截格式化 / 清空分区等）")
+        self.armor_check.setStyleSheet("padding:2px 0 2px 22px;")
+        self.armor_check.setChecked(bool(self.settings.get("armor_enabled", True)))
+        cl.addWidget(self.armor_check)
+
+        self.hostprot_check = QCheckBox("启用宿主机隔离（阻止容器触达宿主机磁盘）")
+        self.hostprot_check.setStyleSheet("padding:2px 0 2px 22px;")
+        from . import hostprotect
+        self.hostprot_check.setChecked(hostprotect.status() != "disabled")
+        self.hostprot_check.setEnabled(False)  # 安全项，始终开启
+        cl.addWidget(self.hostprot_check)
+
+        hint = QLabel("防格机模块依赖 Root 环境；宿主机隔离为安全项，始终开启。")
+        hint.setObjectName("DimSmall")
+        hint.setWordWrap(True)
+        cl.addWidget(hint)
+
+        row = QHBoxLayout()
+        self.settings_status = QLabel("")
+        self.settings_status.setObjectName("DimSmall")
+        row.addWidget(self.settings_status)
+        row.addStretch(1)
+        apply_btn = QPushButton("保存并应用")
+        apply_btn.setObjectName("Primary")
+        apply_btn.clicked.connect(self._apply_settings)
+        row.addWidget(apply_btn)
+        cl.addLayout(row)
+
+        lay.addWidget(card)
+        lay.addStretch(1)
+
+        self._on_root_toggled(self.root_check.isChecked())
+        return page
+
+    def _on_root_toggled(self, checked: bool):
+        # Child option only usable when the parent is enabled.
+        self.armor_check.setEnabled(checked)
+        if not checked:
+            self.armor_check.setStyleSheet(
+                "padding:2px 0 2px 22px; color:#6b7280;")
+
+    def _apply_settings(self):
+        root_on = self.root_check.isChecked()
+        armor_on = self.armor_check.isChecked() and root_on
+        self.settings.set("root_enabled", root_on)
+        self.settings.set("armor_enabled", armor_on)
+        # Host isolation is always enforced.
+        try:
+            from . import hostprotect
+            hostprotect.ensure()
+        except Exception:  # noqa: BLE001
+            pass
+        if not root_on:
+            self.settings_status.setText("已保存：Root 环境未启用")
+            self.settings_status.setStyleSheet(f"color:{theme.TEXT_DIM};")
+            return
+        if self.rootenv is None:
+            self.settings_status.setText("当前平台不支持 Root 环境")
+            return
+        if not self.rootenv.magisk_installed() or not self.settings.get("root_ready"):
+            TaskDialog("配置 Root 环境",
+                       lambda log: self.rootenv.ensure_root(
+                           log, with_armor=armor_on)).exec()
+            self.settings.set("root_ready", True)
+        elif armor_on and not self.rootenv.armor_installed():
+            TaskDialog("安装防格机模块",
+                       lambda log: self.rootenv.install_armor(log)).exec()
+        self.settings_status.setText("已保存")
+        self.settings_status.setStyleSheet(f"color:{theme.ACCENT};")
+        self._refresh()
 
     def _build_about_page(self) -> QWidget:
         page = QWidget()

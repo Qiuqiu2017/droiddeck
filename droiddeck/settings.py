@@ -9,7 +9,8 @@ from pathlib import Path
 class Settings:
     DEFAULTS = {
         "root_enabled": True,   # ask on start-up, checked by default
-        "asked_root": False,
+        "armor_enabled": True,  # anti-wipe module
+        "asked_root": False,    # only ask once
     }
 
     def __init__(self) -> None:

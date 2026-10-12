@@ -1,10 +1,10 @@
 {
-  "version": "0.3.1",
+  "version": "0.3.2",
   "date": "2026-10-11",
-  "notes": "「关于」页更新说明。\n\n- 关于页显示当前版本号与更新服务器地址\n- 「检查更新」按钮旁显示检查结果（已是最新 / 发现新版本 / 检查失败）\n- 更新服务器：https://qiuqiu2017.github.io/droiddeck\n- 启动时仍会自动静默检查更新，发现新版本弹窗提示",
+  "notes": "Root 环境与设置体验优化。\n\n- Root 环境询问弹窗仅在首次启动时出现，不再每次都弹\n- 新增「设置」页：\n  - 独立的「启用 Root 环境」选项（需点「保存并应用」生效）\n  - 「启用防格机模块」子项：父项未启用时置灰不可改\n- 防格机、宿主机隔离等安全项状态在设置页可见",
   "url": "https://qiuqiu2017.github.io/droiddeck/",
   "assets": {
-    "droiddeck_0.3.1_amd64.deb": "https://github.com/Qiuqiu2017/droiddeck/releases/download/v0.3.1/droiddeck_0.3.1_amd64.deb",
-    "droiddeck-linux-x86_64.tar.gz": "https://github.com/Qiuqiu2017/droiddeck/releases/download/v0.3.1/droiddeck-linux-x86_64.tar.gz"
+    "droiddeck_0.3.2_amd64.deb": "https://github.com/Qiuqiu2017/droiddeck/releases/download/v0.3.2/droiddeck_0.3.2_amd64.deb",
+    "droiddeck-linux-x86_64.tar.gz": "https://github.com/Qiuqiu2017/droiddeck/releases/download/v0.3.2/droiddeck-linux-x86_64.tar.gz"
   }
 }

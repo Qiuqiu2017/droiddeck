@@ -47,6 +47,9 @@ class RootPromptDialog(QDialog):
         self.armor.setStyleSheet("padding:2px 0 6px 22px;")
         lay.addWidget(self.armor)
 
+        self.check.toggled.connect(self._sync_armor)
+        self._sync_armor(default_checked)
+
         row = QHBoxLayout()
         row.addStretch(1)
         later = QPushButton("稍后再说")
@@ -59,6 +62,12 @@ class RootPromptDialog(QDialog):
         row.addWidget(later)
         row.addWidget(ok)
         lay.addLayout(row)
+
+    def _sync_armor(self, checked: bool):
+        # Child option is only usable when the parent is enabled.
+        self.armor.setEnabled(checked)
+        self.armor.setStyleSheet(
+            "padding:2px 0 6px 22px;" + ("" if checked else " color:#6b7280;"))
 
     @property
     def enabled(self) -> bool:
