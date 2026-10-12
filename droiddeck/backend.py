@@ -249,6 +249,14 @@ class WaydroidBackend(AndroidBackend):
             time.sleep(1)
         raise BackendError("Waydroid 会话启动超时")
 
+    def restart_session(self, on_line: Callable[[str], None] | None = None) -> None:
+        """Stop then start the session (used by the 重启容器 button)."""
+        self._run(["waydroid", "session", "stop"], timeout=40)
+        deadline = time.time() + 30
+        while time.time() < deadline and self.state().session == "RUNNING":
+            time.sleep(1)
+        self.start_session(on_line)
+
     def warm_up(self) -> None:
         """Best-effort: bring the session/compositor up in the background."""
         try:

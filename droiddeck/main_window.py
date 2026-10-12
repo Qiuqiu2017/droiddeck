@@ -7,8 +7,8 @@ from pathlib import Path
 from PySide6.QtCore import Qt, QTimer, QThread, Signal
 from PySide6.QtWidgets import (
     QButtonGroup, QCheckBox, QDialog, QFileDialog, QFrame, QGridLayout,
-    QHBoxLayout, QLabel, QMessageBox, QPushButton, QScrollArea, QSizePolicy,
-    QStackedWidget, QVBoxLayout, QWidget,
+    QHBoxLayout, QLabel, QLineEdit, QMessageBox, QPushButton, QScrollArea,
+    QSizePolicy, QStackedWidget, QVBoxLayout, QWidget,
 )
 
 from . import theme
@@ -83,6 +83,23 @@ class UpdateWorker(QThread):
             self.none.emit()
 
 
+class CallWorker(QThread):
+    """Run a backend callable off the UI thread."""
+
+    done = Signal()
+
+    def __init__(self, fn, parent=None):
+        super().__init__(parent)
+        self.fn = fn
+
+    def run(self):
+        try:
+            self.fn()
+        except Exception:  # noqa: BLE001
+            pass
+        self.done.emit()
+
+
 class MainWindow(QWidget):
     def __init__(self, backend: AndroidBackend | None = None):
         super().__init__()
@@ -92,10 +109,15 @@ class MainWindow(QWidget):
             self.backend, WaydroidBackend) else None
         self._data_worker: DataWorker | None = None
         self._warm_worker: WarmUpWorker | None = None
+        self._restart_worker: CallWorker | None = None
+        self._last_st = None
+        self._last_apps: list = []
+        self._render_key = None
 
         self.setObjectName("Root")
         self.setWindowTitle("DroidDeck — Android 应用运行器")
         self.resize(1040, 680)
+        self.setAcceptDrops(True)
 
         root = QHBoxLayout(self)
         root.setContentsMargins(0, 0, 0, 0)
@@ -330,6 +352,22 @@ class MainWindow(QWidget):
 
         lay.addWidget(Banner(self.backend.runtime_name))
 
+        toolbar = QHBoxLayout()
+        self.search = QLineEdit()
+        self.search.setPlaceholderText("搜索已安装应用…")
+        self.search.setClearButtonEnabled(True)
+        self.search.textChanged.connect(self._on_search)
+        refresh_btn = QPushButton("刷新")
+        refresh_btn.setObjectName("Secondary")
+        refresh_btn.clicked.connect(self._refresh)
+        self.restart_btn = QPushButton("重启容器")
+        self.restart_btn.setObjectName("Secondary")
+        self.restart_btn.clicked.connect(self._restart_container)
+        toolbar.addWidget(self.search, 1)
+        toolbar.addWidget(refresh_btn)
+        toolbar.addWidget(self.restart_btn)
+        lay.addLayout(toolbar)
+
         self.grid_card = QFrame()
         self.grid_card.setObjectName("Card")
         self.grid_layout = QGridLayout(self.grid_card)
@@ -532,8 +570,31 @@ class MainWindow(QWidget):
         self._data_worker.start()
 
     def _on_data(self, st: ContainerState, apps: list):
+        self._last_st = st
+        self._last_apps = apps
         self._update_status(st)
         self._render_apps(st, apps)
+
+    def _on_search(self, _text: str):
+        if self._last_st is not None:
+            self._render_key = None
+            self._render_apps(self._last_st, self._last_apps)
+
+    def _restart_container(self):
+        if self._restart_worker and self._restart_worker.isRunning():
+            return
+        self.status_chip.setText("重启中…")
+        self._set_chip_class(self.status_chip, "warn")
+        self.restart_btn.setEnabled(False)
+        self._restart_worker = CallWorker(
+            lambda: self.backend.restart_session(), self)
+        self._restart_worker.done.connect(self._on_restart_done)
+        self._restart_worker.start()
+
+    def _on_restart_done(self):
+        self.restart_btn.setEnabled(True)
+        self._render_key = None
+        self._refresh()
 
     def _update_status(self, st: ContainerState):
         if not st.initialized:
@@ -554,14 +615,27 @@ class MainWindow(QWidget):
         chip.style().polish(chip)
 
     def _render_apps(self, st: ContainerState, apps: list):
+        query = self.search.text().strip().lower() if hasattr(self, "search") else ""
+        shown = [
+            a for a in apps
+            if not query or query in a.name.lower() or query in a.package.lower()
+        ]
+        sig = tuple((a.package, a.name, a.icon_path) for a in shown)
+        key = (st.initialized, st.session, query, sig)
+        if key == self._render_key:
+            return  # nothing changed — avoid flicker/scroll reset every cycle
+        self._render_key = key
+
         while self.grid_layout.count():
             item = self.grid_layout.takeAt(0)
             w = item.widget()
             if w and w is not self.empty_hint:
                 w.deleteLater()
 
-        if not apps:
-            if not st.initialized:
+        if not shown:
+            if apps and query:
+                msg = f"没有匹配「{self.search.text().strip()}」的应用。"
+            elif not st.initialized:
                 msg = "Waydroid 尚未初始化。"
             elif st.session != "RUNNING":
                 msg = "容器未运行，正在启动或点击左下角「启动容器」。"
@@ -576,7 +650,7 @@ class MainWindow(QWidget):
         cols = 2 if self.width() >= 1180 else 1
         self.grid_layout.setColumnStretch(0, 1)
         self.grid_layout.setColumnStretch(1, 1 if cols == 2 else 0)
-        for i, app in enumerate(apps):
+        for i, app in enumerate(shown):
             tile = AppTile(app.package, app.name, app.icon_path)
             tile.launched.connect(self._launch)
             tile.removed.connect(self._remove)
@@ -602,3 +676,33 @@ class MainWindow(QWidget):
 
     def _error(self, msg: str):
         QMessageBox.warning(self, "提示", msg)
+
+    # ---------------------------------------------------------- drag & drop
+    _DROP_EXT = (".apk", ".xapk", ".apks", ".apkm", ".zip", ".hap")
+
+    def dragEnterEvent(self, event):
+        md = event.mimeData()
+        if md.hasUrls() and any(
+            u.toLocalFile().lower().endswith(self._DROP_EXT) for u in md.urls()
+        ):
+            event.acceptProposedAction()
+        else:
+            event.ignore()
+
+    def dropEvent(self, event):
+        files = [
+            u.toLocalFile() for u in event.mimeData().urls()
+            if u.toLocalFile().lower().endswith(self._DROP_EXT)
+        ]
+        event.acceptProposedAction()
+        for path in files:
+            if path.lower().endswith(".hap"):
+                QMessageBox.information(
+                    self, "暂不支持",
+                    "HarmonyOS NEXT 的 .hap 无法在 Android 容器中运行。")
+                continue
+            dlg = InstallDialog(self.backend, path, self)
+            dlg.installed.connect(self._refresh)
+            dlg.exec()
+        if files:
+            self._refresh()
