@@ -66,8 +66,10 @@ class AppTile(QFrame):
 
     launched = Signal(str)      # package
     removed = Signal(str)       # package
+    compat_toggled = Signal(str, bool)  # package, enabled
 
-    def __init__(self, package: str, name: str, icon_path: Optional[str], parent=None):
+    def __init__(self, package: str, name: str, icon_path: Optional[str],
+                 compat: bool = False, parent=None):
         super().__init__(parent)
         self.package = package
         self.setObjectName("AppTile")
@@ -109,6 +111,19 @@ class AppTile(QFrame):
         self.more_btn.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
         self.more_btn.clicked.connect(lambda: self.removed.emit(self.package))
 
+        self.compat_btn = QPushButton("触控")
+        self.compat_btn.setObjectName("Ghost")
+        self.compat_btn.setCheckable(True)
+        self.compat_btn.setChecked(compat)
+        self.compat_btn.setFixedWidth(56)
+        self.compat_btn.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        self.compat_btn.setToolTip(
+            "触控兼容：把鼠标点击当作触摸事件（用于点击没反应的游戏），"
+            "并假装 Wi‑Fi 网络。修改后需重启容器生效。")
+        self.compat_btn.toggled.connect(
+            lambda on: self.compat_toggled.emit(self.package, on))
+
+        lay.addWidget(self.compat_btn)
         lay.addWidget(self.more_btn)
         lay.addWidget(self.launch_btn)
 

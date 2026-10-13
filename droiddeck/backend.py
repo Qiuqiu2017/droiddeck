@@ -284,6 +284,32 @@ class WaydroidBackend(AndroidBackend):
         except Exception:  # noqa: BLE001
             pass
 
+    # -- input / network compatibility -------------------------------------
+    def _set_prop(self, key: str, value: str) -> None:
+        self._run(["waydroid", "prop", "set", key, value], timeout=20)
+
+    def set_compat_apps(self, packages: list[str]) -> None:
+        """Enable fake-touch / fake-wifi for the given packages (and only them).
+
+        Many games ignore mouse clicks and only react to real touch events
+        (their anti-emulator check). ``persist.waydroid.fake_touch`` makes
+        Waydroid deliver touches instead of mouse events, so such games become
+        controllable. Some apps also mistake the container network for a
+        cellular connection; ``persist.waydroid.fake_wifi`` reports Wi-Fi.
+
+        Android's ``setprop`` caps the value at ~92 bytes, so this only works
+        for a handful of packages — hence the per-app toggle rather than a
+        global switch. Changes take effect after the container is restarted.
+        """
+        value = ",".join(packages)
+        if len(value) > 90:
+            raise BackendError(
+                "启用了触控兼容的应用过多（系统属性长度有限）。"
+                "请先关闭部分应用的触控兼容。"
+            )
+        self._set_prop("persist.waydroid.fake_touch", value)
+        self._set_prop("persist.waydroid.fake_wifi", value)
+
     # -- apps --------------------------------------------------------------
     def list_apps(self) -> list[AndroidApp]:
         apps: list[AndroidApp] = []

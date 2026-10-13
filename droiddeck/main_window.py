@@ -105,6 +105,7 @@ class MainWindow(QWidget):
         super().__init__()
         self.backend = backend or default_backend()
         self.settings = Settings()
+        self._compat_set = set(self.settings.get("compat_apps", []) or [])
         self.rootenv = RootEnv(self.backend) if isinstance(
             self.backend, WaydroidBackend) else None
         self._data_worker: DataWorker | None = None
@@ -423,7 +424,8 @@ class MainWindow(QWidget):
         self.hostprot_check.setEnabled(False)
         cl.addWidget(self.hostprot_check)
 
-        hint = QLabel("防格机模块依赖 Root 环境；宿主机隔离为安全项，始终开启。")
+        hint = QLabel("防格机模块依赖 Root 环境；宿主机隔离为安全项，始终开启。\n"
+                      "「触控兼容」在应用库中按应用开启，用于点击无反应的游戏。")
         hint.setObjectName("DimSmall")
         hint.setWordWrap(True)
         cl.addWidget(hint)
@@ -675,7 +677,7 @@ class MainWindow(QWidget):
             if not query or query in a.name.lower() or query in a.package.lower()
         ]
         sig = tuple((a.package, a.name, a.icon_path) for a in shown)
-        key = (st.initialized, st.session, query, sig)
+        key = (st.initialized, st.session, query, sig, tuple(sorted(self._compat_set)))
         if key == self._render_key:
             return  # nothing changed — avoid flicker/scroll reset every cycle
         self._render_key = key
@@ -710,11 +712,32 @@ class MainWindow(QWidget):
         self.grid_layout.setColumnStretch(0, 1)
         self.grid_layout.setColumnStretch(1, 1 if cols == 2 else 0)
         for i, app in enumerate(shown):
-            tile = AppTile(app.package, app.name, app.icon_path)
+            tile = AppTile(app.package, app.name, app.icon_path,
+                           compat=app.package in self._compat_set)
             tile.launched.connect(self._launch)
             tile.removed.connect(self._remove)
+            tile.compat_toggled.connect(self._toggle_compat)
             self.grid_layout.addWidget(tile, i // cols, i % cols)
         self.grid_layout.setRowStretch(self.grid_layout.rowCount(), 1)
+
+    def _toggle_compat(self, package: str, enabled: bool):
+        if not isinstance(self.backend, WaydroidBackend):
+            return
+        new = set(self._compat_set)
+        if enabled:
+            new.add(package)
+        else:
+            new.discard(package)
+        try:
+            self.backend.set_compat_apps(sorted(new))
+        except BackendError as e:
+            self._error(str(e))
+            self._render_key = None
+            self._render_apps(self._last_st, self._last_apps)
+            return
+        self._compat_set = new
+        self.settings.set("compat_apps", sorted(new))
+        self._render_key = None
 
     def _launch(self, package: str):
         try:

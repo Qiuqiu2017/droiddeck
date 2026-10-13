@@ -15,8 +15,8 @@ python3 -m PyInstaller --noconfirm --clean packaging/droiddeck.spec
 
 OS="$(uname -s)"
 case "$OS" in
-  Linux*)  ARCH="$(uname -m)"; tar -C dist -czf "droiddeck-linux-$ARCH.tar.gz" droiddeck ;;
-  Darwin*) ARCH="$(uname -m)"; tar -C dist -czf "droiddeck-macos-$ARCH.tar.gz" droiddeck ;;
+  Linux*)  ARCH="$(uname -m)"; tar -C dist -czf "dist/droiddeck-linux-$ARCH.tar.gz" droiddeck ;;
+  Darwin*) ARCH="$(uname -m)"; tar -C dist -czf "dist/droiddeck-macos-$ARCH.tar.gz" droiddeck ;;
   *)       echo "请在 Windows 上使用: Compress-Archive dist/droiddeck droiddeck-windows.zip" ;;
 esac
 

@@ -11,6 +11,7 @@ class Settings:
         "root_enabled": True,   # ask on start-up, checked by default
         "armor_enabled": True,  # anti-wipe module
         "asked_root": False,    # only ask once
+        "compat_apps": [],      # apps with fake-touch / fake-wifi enabled
     }
 
     def __init__(self) -> None:

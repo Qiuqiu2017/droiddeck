@@ -1,10 +1,10 @@
 {
-  "version": "0.6.0",
-  "date": "2026-10-12 19:04",
-  "notes": "新增单实例运行。\n\n- 重复打开 DroidDeck 时，不再弹出第二个窗口，而是把已有的窗口带到前台\n- 避免多个实例同时操作容器造成混乱",
+  "version": "0.7.0",
+  "date": "2026-10-13 19:40",
+  "notes": "新增按应用的「触控兼容」模式。\n\n- 应用库中每个应用新增「触控」开关：把鼠标点击转成触摸事件，修复部分游戏（如三角洲行动）鼠标点击按钮没有反应的问题\n- 开启时同时为该应用假装 Wi‑Fi 网络，避免应用把容器网络误判为蜂窝/移动数据\n- 修改后需重启容器生效\n- 修复 build.sh 生成的压缩包位置错误（现在正确输出到 dist/）",
   "url": "https://qiuqiu2017.github.io/droiddeck/",
   "assets": {
-    "droiddeck_0.6.0_amd64.deb": "https://github.com/Qiuqiu2017/droiddeck/releases/download/v0.6.0/droiddeck_0.6.0_amd64.deb",
-    "droiddeck-linux-x86_64.tar.gz": "https://github.com/Qiuqiu2017/droiddeck/releases/download/v0.6.0/droiddeck-linux-x86_64.tar.gz"
+    "droiddeck_0.7.0_amd64.deb": "https://github.com/Qiuqiu2017/droiddeck/releases/download/v0.7.0/droiddeck_0.7.0_amd64.deb",
+    "droiddeck-linux-x86_64.tar.gz": "https://github.com/Qiuqiu2017/droiddeck/releases/download/v0.7.0/droiddeck-linux-x86_64.tar.gz"
   }
 }
