@@ -1,8 +1,8 @@
 """Update checker for DroidDeck.
 
 Fetches the latest-version manifest from the project's update server
-(default https://droiddeck.top/latest.json) and compares it with the running
-version.
+(default https://qiuqiu2017.github.io/droiddeck/latest.json) and compares it
+with the running version.
 """
 
 from __future__ import annotations

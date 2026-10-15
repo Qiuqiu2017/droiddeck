@@ -564,7 +564,10 @@ class MainWindow(QWidget):
             info = self.backend.env_info() if hasattr(self.backend, "env_info") else {}
         except Exception:  # noqa: BLE001
             info = {}
-        self.env_labels["容器"].setText(info.get("Container", "—"))
+        cont = info.get("Container", "—")
+        cont = {"RUNNING": "运行中", "FROZEN": "运行中（空闲挂起）",
+                "STOPPED": "已停止"}.get(cont.upper(), cont)
+        self.env_labels["容器"].setText(cont)
         self.env_labels["Android"].setText(info.get("Android", "—"))
         self.env_labels["IP"].setText(info.get("IP address", "—"))
         root = "已启用" if (self.rootenv and self.rootenv.magisk_installed()) else "未启用"
@@ -580,7 +583,8 @@ class MainWindow(QWidget):
     def _pick_apk(self):
         path, _ = QFileDialog.getOpenFileName(
             self, "选择安装包", str(Path.home()),
-            "Android / 鸿蒙 安装包 (*.apk *.apks *.xapk *.hap);;所有文件 (*)",
+            "Android / 鸿蒙 安装包 (*.apk *.apks *.xapk *.apkm *.zip *.hap);;"
+            "所有文件 (*)",
         )
         if not path:
             return
@@ -660,7 +664,9 @@ class MainWindow(QWidget):
             self.status_chip.setText("运行中")
             self._set_chip_class(self.status_chip, "run")
         else:
-            self.status_chip.setText(st.session.title())
+            label = {"STOPPED": "已停止", "STARTING": "启动中",
+                     "STOPPING": "停止中"}.get(st.session.upper(), "已停止")
+            self.status_chip.setText(label)
             self._set_chip_class(self.status_chip, "stop")
         self.open_desktop_btn.setEnabled(st.initialized)
         self.session_btn.setEnabled(st.session != "RUNNING")

@@ -15,7 +15,11 @@ INFO = "#4c8dff"
 WARN = "#ffb020"
 DANGER = "#ff5c5c"
 
-FONT_FAMILY = "Inter, 'Noto Sans CJK SC', 'Source Han Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+# CJK-capable families first: if a Latin-only family (e.g. Inter) is listed
+# first and missing, Qt falls back per-glyph and bold CJK text gets odd
+# letter-spacing. Keeping a CJK family first renders everything cleanly.
+FONT_FAMILY = ("'Noto Sans CJK SC', 'Source Han Sans SC', 'WenQuanYi Micro Hei', "
+               "'PingFang SC', 'Microsoft YaHei', 'Inter', 'DejaVu Sans', sans-serif")
 
 
 def stylesheet() -> str:
@@ -100,7 +104,11 @@ def stylesheet() -> str:
         padding: 12px 20px;
     }}
     QPushButton#Secondary:hover {{ border-color: {ACCENT}; }}
-    QPushButton#Secondary:disabled {{ color: {TEXT_DIM}; }}
+    QPushButton#Secondary:disabled {{
+        color: {TEXT_DIM};
+        background: {BG};
+        border-color: {BORDER};
+    }}
 
     QPushButton#Ghost {{
         background: transparent;
@@ -109,6 +117,14 @@ def stylesheet() -> str:
         padding: 6px 10px;
     }}
     QPushButton#Ghost:hover {{ color: {TEXT}; }}
+    QPushButton#Ghost:checked {{
+        color: {ACCENT};
+        background: rgba(61,220,132,0.14);
+        border: 1px solid {ACCENT};
+        border-radius: 8px;
+    }}
+
+    QCheckBox:disabled {{ color: {TEXT_DIM}; }}
 
     /* -------- chips -------- */
     QLabel#Chip {{

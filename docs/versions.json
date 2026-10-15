@@ -1,6 +1,23 @@
 {
-  "latest": "0.7.0",
+  "latest": "0.7.1",
   "versions": [
+    {
+      "version": "0.7.1",
+      "date": "2026-10-15 18:50",
+      "notes": "修复一批界面与交互问题。\n\n- 修复中文标题（加粗）字距异常：字体列表把未安装的 Inter 排在最前，导致逐字回退渲染；改为优先使用中文无衬线字体\n- 容器状态徽章不再显示英文 “Stopped”，统一显示「已停止 / 启动中 / 停止中」\n- 「触控」开关现在有明确的“已开启”视觉反馈（绿色高亮）\n- 运行中时「启动容器」按钮的禁用样式更明显\n- 关于页「容器」状态更直观：运行中 / 运行中（空闲挂起）/ 已停止\n- 修复选择安装包的过滤器漏掉 .apkm / .zip（与拖拽安装保持一致）",
+      "assets": [
+        {
+          "name": "droiddeck_0.7.1_amd64.deb",
+          "url": "https://github.com/Qiuqiu2017/droiddeck/releases/download/v0.7.1/droiddeck_0.7.1_amd64.deb",
+          "size": "46.2 MB"
+        },
+        {
+          "name": "droiddeck-linux-x86_64.tar.gz",
+          "url": "https://github.com/Qiuqiu2017/droiddeck/releases/download/v0.7.1/droiddeck-linux-x86_64.tar.gz",
+          "size": "64.7 MB"
+        }
+      ]
+    },
     {
       "version": "0.7.0",
       "date": "2026-10-13 19:40",
